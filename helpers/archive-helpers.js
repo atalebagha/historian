@@ -32,17 +32,17 @@ exports.readListOfUrls = function(callback){
   fs.readFile(file, "utf8", function(err,data){
     if(err) throw err;
     sites = data.split("\n");
-    callback(sites);
+    callback(sites); //callback on whole array
   });
 };
 
-exports.isUrlInList = function(site, callback){
+exports.isUrlInList = function(site, callback){ //Data is in the argument
   var file = this.paths.list;
   var sites = [];
   fs.readFile(file, "utf8", function(err,data){
     if(err) throw err;
     sites = data.split("\n");
-    callback(sites[sites.indexOf(site)]);
+    callback(sites[sites.indexOf(site)]); //Callback on the individual site
   });
 };
 
@@ -56,7 +56,7 @@ exports.addUrlToList = function(site, callback){
 
 exports.isUrlArchived = function(site, callback){
   var siteLoc = this.paths.archivedSites + "/" + site;
-  fs.stat(siteLoc, function (err, data) {
+  fs.stat(siteLoc, function (err, data) { //Check if the file is there archieved
     callback(siteLoc);
   });
 };
