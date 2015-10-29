@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var fetch = require('../workers/htmlfetcher.js');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -29,9 +30,7 @@ exports.readListOfUrls = function(callback){
   var file = this.paths.list;
   var sites = [];
   fs.readFile(file, "utf8", function(err,data){
-    if(err){
-      throw new Error("File not found");
-    }
+    if(err) throw err;
     sites = data.split("\n");
     callback(sites);
   });
@@ -41,24 +40,39 @@ exports.isUrlInList = function(site, callback){
   var file = this.paths.list;
   var sites = [];
   fs.readFile(file, "utf8", function(err,data){
-    if(err){
-      throw new Error("File not found");
-    }
+    if(err) throw err;
     sites = data.split("\n");
-    // if (sites.indexOf(site) > -1) {
-      callback(sites[sites.indexOf(site)]);
-    // }
+    callback(sites[sites.indexOf(site)]);
   });
 };
 
-exports.addUrlToList = function(){
+exports.addUrlToList = function(site, callback){
+  var file = this.paths.list;
+  fs.appendFile(file, site, 'utf8', function (err) {
+    if(err) throw err
+    callback(site);
+  });
 };
 
-exports.isUrlArchived = function(){
-  file = "./archlll/" + argument
-  fs.existsSync(file)
+exports.isUrlArchived = function(site, callback){
+  var siteLoc = this.paths.archivedSites + "/" + site;
+  fs.stat(siteLoc, function (err, data) {
+    callback(siteLoc);
+  });
 };
 
-exports.downloadUrls = function(){
+exports.downloadUrls = function(collection){
+  // var file = this.paths.list;
+  // var sites = [];
+  // fs.readFile(file, "utf8", function(err,data){
+  //   if(err) throw err;
+  //   sites = data.split("\n");
+  //   _.each(sites, function (val) {
+  //     callback(val);
+  //   });
+  // });
   //run htmlfetcher
+  _.each(collection, function (val) {
+    fetch(val);
+  })
 };
