@@ -30,4 +30,7 @@ exports.makeActionHandler = function(actionMap){
   }
 };
 
+//Router to serve files
+//Use archive helpers
+
 // As you progress, keep thinking about what helper functions you can put here!
