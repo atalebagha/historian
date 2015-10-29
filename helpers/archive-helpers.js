@@ -25,7 +25,7 @@ exports.initialize = function(pathsObj){
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function(params){
+exports.readListOfUrls = function(callback){
   var file = this.paths.list;
   // console.log(that);
   var sites = [];
@@ -33,19 +33,14 @@ exports.readListOfUrls = function(params){
     if(err){
       throw new Error("File not found");
     }
-
-    // console.log(typeof data);
-    // data = data.toString();
-    // console.log(data + " after");
     sites = data.split("\n");
     console.log(sites);
-    params(sites);
+    callback(sites);//Use the function from the test spec
   });
-
-  // return sites;
 };
 
 exports.isUrlInList = function(){
+
 };
 
 exports.addUrlToList = function(){

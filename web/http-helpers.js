@@ -30,4 +30,27 @@ exports.makeActionHandler = function(actionMap){
   }
 };
 
+exports.sendResponse = function(response, data, statusCode){
+  statusCode = statusCode || 200;
+  response.writeHead(statusCode, headers);
+  response.end(JSON.stringify(data));
+};
+
+var actions = {
+  'GET': function(request, response){
+    utils.sendResponse(response, {results: messages});
+  },
+  'POST': function(request, response){
+    // changed
+    utils.collectData(request, function(message){
+      message.objectId = ++objectIdCounter;
+      messages.push(message);
+      utils.sendResponse(response, {objectId: message.objectId}, 201);
+    });
+  },
+  'OPTIONS': function(request, response){
+    utils.sendResponse(response, null);
+  }
+};
+
 // As you progress, keep thinking about what helper functions you can put here!
