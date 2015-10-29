@@ -30,18 +30,33 @@ exports.makeActionHandler = function(actionMap){
   }
 };
 
-exports.sendResponse = function(response, data, statusCode){
+var sendResponse = function(response, data, statusCode){
   statusCode = statusCode || 200;
   response.writeHead(statusCode, headers);
-  response.end(JSON.stringify(data));
+  response.end(data);
 };
 
-var actions = {
+var loadMain = function(req, res) {
+  fs.readFile('./public/index.html', function (err,data) {
+    if (err) {
+      console.log("Problem with fetching the file")
+      sendResponse(res, err, 404)
+    }
+  sendResponse(res, data, 200);
+  });
+}
+
+exports.actions = {
   'GET': function(request, response){
-    utils.sendResponse(response, {results: messages});
+    console.log( 'GET Action Function' )
+    if (request.url = '/') {
+      loadMain(request, response);
+    }
   },
   'POST': function(request, response){
     // changed
+    //
+
     utils.collectData(request, function(message){
       message.objectId = ++objectIdCounter;
       messages.push(message);
