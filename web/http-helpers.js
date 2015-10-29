@@ -1,6 +1,8 @@
+var finalhandler = require('finalhandler');
 var path = require('path');
 var fs = require('fs');
 var archive = require('../helpers/archive-helpers');
+var serveStatic = require('serve-static');
 
 exports.headers = headers = {
   "access-control-allow-origin": "*",
@@ -9,6 +11,8 @@ exports.headers = headers = {
   "access-control-max-age": 10, // Seconds.
   'Content-Type': "text/html"
 };
+
+exports.serveIndex = serveStatic(__dirname + '/public', { 'index' : 'index.html'});
 
 exports.serveAssets = function(res, asset, callback) {
 
@@ -19,38 +23,28 @@ exports.serveAssets = function(res, asset, callback) {
   // css, or anything that doesn't change often.)
 };
 
+exports.sendResponse = function(response, data, statusCode){
+  statusCode = statusCode || 200;
+  response.writeHead(statusCode, exports.headers);
+  response.end(JSON.stringify(data));
+};
+
 exports.makeActionHandler = function(actionMap){
+  console.log(__dirname + " actionHandler");
   return function(request, response) {
+    console.log(" hello b");
     var action = actionMap[request.method];
     if (action) {
+      console.log(" Testing action success");
       action(request, response);
     } else {
+      console.log(" Testing action failure");
       exports.sendResponse(response, '', 404);
     }
   }
 };
 
-exports.sendResponse = function(response, data, statusCode){
-  statusCode = statusCode || 200;
-  response.writeHead(statusCode, headers);
-  response.end(JSON.stringify(data));
-};
-
-var actions = {
-  'GET': function(request, response){
-    utils.sendResponse(response, {results: messages});
-  },
-  'POST': function(request, response){
-    // changed
-    utils.collectData(request, function(message){
-      message.objectId = ++objectIdCounter;
-      messages.push(message);
-      utils.sendResponse(response, {objectId: message.objectId}, 201);
-    });
-  },
-  'OPTIONS': function(request, response){
-    utils.sendResponse(response, null);
-  }
-};
+//Router to serve files
+//Use archive helpers
 
 // As you progress, keep thinking about what helper functions you can put here!
