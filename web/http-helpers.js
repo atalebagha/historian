@@ -30,15 +30,12 @@ exports.sendResponse = function(response, data, statusCode){
 };
 
 exports.makeActionHandler = function(actionMap){
-  console.log(__dirname + " actionHandler");
+  var actionMap = actionMap;
   return function(request, response) {
-    console.log(" hello b");
     var action = actionMap[request.method];
     if (action) {
-      console.log(" Testing action success");
       action(request, response);
     } else {
-      console.log(" Testing action failure");
       exports.sendResponse(response, '', 404);
     }
   }
